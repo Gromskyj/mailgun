@@ -3,10 +3,10 @@ import Foundation
 
 // MARK: - Service
 public protocol MailgunProvider {
-    func send(_ content: MailgunMessage) -> EventLoopFuture<ClientResponse>
-    func send(_ content: MailgunTemplateMessage) -> EventLoopFuture<ClientResponse>
-    func setup(forwarding: MailgunRouteSetup) -> EventLoopFuture<ClientResponse>
-    func createTemplate(_ template: MailgunTemplate) -> EventLoopFuture<ClientResponse>
+    func send(_ content: MailgunMessage) async throws -> ClientResponse
+    func send(_ content: MailgunTemplateMessage) async throws -> ClientResponse
+    func setup(forwarding: MailgunRouteSetup) async throws -> ClientResponse
+    func createTemplate(_ template: MailgunTemplate) async throws -> ClientResponse
     
     func delegating(to eventLoop: EventLoop) -> MailgunProvider
 }
@@ -52,8 +52,8 @@ extension MailgunClient {
     ///   - content: Message
     ///   - container: Container
     /// - Returns: Future<Response>
-    public func send(_ content: MailgunMessage) -> EventLoopFuture<ClientResponse> {
-        postRequest(content, endpoint: "messages")
+    public func send(_ content: MailgunMessage) async throws -> ClientResponse {
+        try await postRequest(content, endpoint: "messages")
     }
 
     /// Send message
@@ -62,8 +62,8 @@ extension MailgunClient {
     ///   - content: TemplateMessage
     ///   - container: Container
     /// - Returns: Future<Response>
-    public func send(_ content: MailgunTemplateMessage) -> EventLoopFuture<ClientResponse> {
-        postRequest(content, endpoint: "messages")
+    public func send(_ content: MailgunTemplateMessage) async throws -> ClientResponse {
+        try await postRequest(content, endpoint: "messages")
     }
     
     /// Setup forwarding
@@ -72,8 +72,8 @@ extension MailgunClient {
     ///   - setup: RouteSetup
     ///   - container: Container
     /// - Returns: Future<Response>
-    public func setup(forwarding setup: MailgunRouteSetup) -> EventLoopFuture<ClientResponse> {
-        postRequest(setup, endpoint: "v3/routes")
+    public func setup(forwarding setup: MailgunRouteSetup) async throws -> ClientResponse {
+        try await postRequest(setup, endpoint: "v3/routes")
     }
 
     /// Create template
@@ -82,8 +82,8 @@ extension MailgunClient {
     ///   - template: Template
     ///   - container: Container
     /// - Returns: Future<Response>
-    public func createTemplate(_ template: MailgunTemplate) -> EventLoopFuture<ClientResponse> {
-        postRequest(template, endpoint: "templates")
+    public func createTemplate(_ template: MailgunTemplate) async throws -> ClientResponse {
+        try await postRequest(template, endpoint: "templates")
     }
 }
 
